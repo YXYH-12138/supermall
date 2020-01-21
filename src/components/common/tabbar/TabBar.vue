@@ -19,5 +19,6 @@ export default {
   right: 0;
   height: 49px;
   box-shadow: 0px -1px 1px rgba(100, 100, 100, 0.2);
+  background-color: #fff;
 }
 </style>
