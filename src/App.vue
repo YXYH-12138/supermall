@@ -1,5 +1,8 @@
 <template>
   <div id="app">
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
     <main-tab-bar></main-tab-bar>
   </div>
 </template>
@@ -17,4 +20,7 @@ export default {
 
 <style>
 @import "assets/css/base.css";
+#app {
+  height: 100vh;
+}
 </style>

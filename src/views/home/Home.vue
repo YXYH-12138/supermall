@@ -1,52 +1,29 @@
 <template>
   <div id="home">
-    <nav-bar>
+    <nav-bar ref="navBar">
       <div slot="center">购物街</div>
     </nav-bar>
-    <home-swiper :banners="banners"></home-swiper>
-    <recommend-view :recommends="recommends"></recommend-view>
-    <feature-view></feature-view>
-    <tab-control :titles="['流行','新款','精选']"></tab-control>
-    <ul>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
-    </ul>
+    <tab-control
+      :titles="['流行','新款','精选']"
+      @tabClick="tabClick"
+      ref="fixed_tab_control"
+      class="fixed-tab-control"
+      v-show="isTabConShow"
+    ></tab-control>
+    <scroll
+      ref="scroll"
+      :probeType="3"
+      :pullUpLoad="true"
+      @scroll="scroll($event,300)"
+      @pullingUp="pullingUp"
+    >
+      <home-swiper :banners="banners"></home-swiper>
+      <recommend-view :recommends="recommends"></recommend-view>
+      <feature-view></feature-view>
+      <tab-control :titles="['流行','新款','精选']" @tabClick="tabClick" ref="tab_control"></tab-control>
+      <goods-list :goods="goods[currentType].list" />
+    </scroll>
+    <back-top @click.native="topClick" v-show="backTopShow" />
   </div>
 </template>
 
@@ -56,9 +33,13 @@ import RecommendView from "./childComps/RecommendView";
 import FeatureView from "./childComps/FeatureView";
 
 import TabControl from "components/content/tabcontrol/TabControl";
+import GoodsList from "components/content/goodslist/GoodsList";
+import Scroll from "components/common/scroll/scroll";
 import NavBar from "components/common/navbar/NavBar";
+import BackTop from "components/content/backtop/BackTop";
 
-import { getHomeDatas, getHomeGodds } from "network/home";
+import { getHomeDatas, getHomeGoods } from "network/home";
+import { debounce } from "common/utils";
 
 export default {
   name: "Home",
@@ -67,40 +48,99 @@ export default {
     RecommendView,
     FeatureView,
     TabControl,
-    NavBar
+    NavBar,
+    GoodsList,
+    Scroll,
+    BackTop
   },
   data() {
     return {
       banners: [],
-      recommends: []
+      recommends: [],
+      goods: {
+        pop: { page: 0, list: [] },
+        new: { page: 0, list: [] },
+        sell: { page: 0, list: [] }
+      },
+      currentType: "pop",
+      backTopShow: false,
+      TabOffsetTop: 0,
+      isTabConShow: false,
+      saveY: 0
     };
   },
   created() {
-    //轮播图数据
-    getHomeDatas().then(res => {
-      this.banners = res.data.banner.list;
-      this.recommends = res.data.recommend.list;
-      // console.log(res);
-    });
+    this.getHomeMultidata();
     //商品数据
-    getHomeGodds().then(res => {
-      console.log(res);
+    this.getHomeGoods("pop");
+    this.getHomeGoods("new");
+    this.getHomeGoods("sell");
+  },
+  mounted() {
+    let refresh = debounce(this.$refs.scroll.refresh);
+    this.$bus.$on("itemImgLoad", () => {
+      refresh();
+      if (this.TabOffsetTop == 0)
+        this.TabOffsetTop =
+          this.$refs.tab_control.$el.offsetTop -
+          this.$refs.navBar.$el.offsetHeight;
     });
+  },
+  activated() {
+    this.$refs.scroll.scrollTo(0, this.saveY, 1);
+    this.$refs.scroll.refresh();
+  },
+  deactivated() {
+    this.saveY = this.$refs.scroll.getPosition().y;
+  },
+  methods: {
+    pullingUp() {
+      this.getHomeGoods(this.currentType);
+    },
+    tabClick(index) {
+      this.currentType = ["pop", "new", "sell"][index];
+      this.$refs.fixed_tab_control.currentIndex = index;
+      this.$refs.tab_control.currentIndex = index;
+    },
+    topClick() {
+      this.$refs.scroll.scrollTo(0, 0);
+    },
+    scroll(position, y = 500) {
+      this.backTopShow = Math.abs(position.y) >= y;
+      this.isTabConShow = this.TabOffsetTop <= Math.abs(position.y);
+    },
+    getHomeMultidata() {
+      getHomeDatas().then(res => {
+        this.banners = res.data.banner.list;
+        this.recommends = res.data.recommend.list;
+      });
+    },
+    getHomeGoods(type) {
+      const page = this.goods[type].page + 1;
+      getHomeGoods(type, page).then(res => {
+        this.goods[type].list.push(...res.data.list);
+        this.goods[type].page++;
+        //告诉 better-scroll 数据已加载
+        this.$refs.scroll.finishPullUp();
+      });
+    }
   }
 };
 </script>
 
-<style>
+<style scoped>
 .nav-bar {
   background-color: var(--color-tint);
   color: #fff;
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
   z-index: 999;
 }
-#home {
-  padding-top: 44px;
+.wrapper {
+  height: calc(100vh - 44px - 49px);
+  overflow: hidden;
+}
+.fixed-tab-control {
+  position: fixed;
+  top: 44px;
+  width: 100%;
 }
 </style>

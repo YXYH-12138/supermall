@@ -31,5 +31,7 @@ export default {
 }
 .nav-bar-center {
   flex: 1;
+  display: flex;
+  justify-content: center;
 }
 </style>

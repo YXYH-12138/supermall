@@ -31,6 +31,7 @@ export default {
   methods: {
     tabClick(index) {
       this.currentIndex = index;
+      this.$emit("tabClick", index);
     }
   }
 };
@@ -44,8 +45,7 @@ export default {
   height: 40px;
   line-height: 40px;
   background-color: #fff;
-  position: sticky;
-  top: 44px;
+  z-index: 9999;
 }
 .tab-control-item {
   flex: 1;
