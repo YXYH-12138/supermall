@@ -25,10 +25,12 @@
     </scroll>
     <back-top @click.native="topClick" v-show="backTopShow" />
     <DetailBottomBar @addClick="addClick" />
+    <Toast />
   </div>
 </template>
 
 <script>
+import Toast from "../../components/common/toast/Toast";
 import NavBarDetail from "./childComps/NavBarDetail";
 import DetailSwiper from "./childComps/DetailSwiper";
 import DetailBaseInfo from "./childComps/DetailBaseInfo";
@@ -64,7 +66,9 @@ export default {
     DeatilParamInfo,
     DetailCommentInfo,
     GoodsList,
-    DetailBottomBar
+    DetailBottomBar,
+
+    Toast
   },
   data() {
     return {
@@ -158,7 +162,9 @@ export default {
         desc: this.datas.desc,
         checked: true
       };
-      this.$store.dispatch("addCart", product);
+      this.$store.dispatch("addCart", product).then(res => {
+        this.$toast.show(res);
+      });
     }
   }
 };

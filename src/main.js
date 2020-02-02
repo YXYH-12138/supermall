@@ -5,6 +5,10 @@ import store from './store'
 
 import 'amfe-flexible'
 
+import toast from "components/common/toast"
+
+Vue.use(toast)
+
 Vue.config.productionTip = false
 Vue.prototype.$bus = new Vue()
 

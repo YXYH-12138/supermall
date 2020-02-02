@@ -34,7 +34,6 @@ export default {
   methods: {
     checkClick() {
       this.$store.commit("toggleCartItem", this.cartGoods);
-      this.$bus.$emit("checkClick");
     }
   }
 };

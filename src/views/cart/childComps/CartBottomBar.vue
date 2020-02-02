@@ -1,14 +1,14 @@
 <template>
   <div class="bottom-bar">
     <div class="check-all">
-      <CheckButton :class="{active:isActive}" @click.native="checkAllClick" />
+      <CheckButton :class="{active:isCheck}" @click.native="checkAllClick" />
       <span class="check-text">全选</span>
     </div>
     <div class="money-sum">
       <span>合计:￥</span>
       <span>{{cartSum}}</span>
     </div>
-    <div class="to-calculate">去计算({{cartLength}})</div>
+    <div class="to-calculate" @click="calculateClick">去计算({{cartLength}})</div>
   </div>
 </template>
 
@@ -22,19 +22,6 @@ export default {
   components: {
     CheckButton
   },
-  data() {
-    return {
-      isActive: false
-    };
-  },
-  activated() {
-    this.isActive = this.fullCartList.length > 0 && !this.checkIsFalse;
-  },
-  mounted() {
-    this.$bus.$on("checkClick", () => {
-      this.isActive = !this.checkIsFalse;
-    });
-  },
   computed: {
     ...mapGetters(["cartLength", "checkedCartItem", "fullCartList"]),
     cartSum() {
@@ -44,16 +31,21 @@ export default {
         }, 0)
         .toFixed(2);
     },
-    //判断购物车中是否有没有选中的商品
-    checkIsFalse() {
-      return this.fullCartList.some(item => !item.checked);
+    isCheck() {
+      return (
+        this.fullCartList.length > 0 &&
+        !this.fullCartList.some(item => !item.checked)
+      );
     }
   },
   methods: {
     checkAllClick() {
-      if (this.fullCartList.length === 0) return;
-      this.isActive = !this.isActive;
-      this.$store.commit("toggleCartList", this.isActive);
+      this.$store.commit("toggleCartList", !this.isCheck);
+    },
+    calculateClick() {
+      if (!this.checkedCartItem.length) {
+        this.$toast.show("无商品");
+      }
     }
   }
 };
