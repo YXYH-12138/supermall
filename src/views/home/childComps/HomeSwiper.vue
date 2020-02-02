@@ -28,5 +28,8 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+#swiper-dv {
+  height: 195px;
+}
 </style>

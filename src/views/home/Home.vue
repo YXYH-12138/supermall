@@ -36,13 +36,14 @@ import TabControl from "components/content/tabcontrol/TabControl";
 import GoodsList from "components/content/goodslist/GoodsList";
 import Scroll from "components/common/scroll/scroll";
 import NavBar from "components/common/navbar/NavBar";
-import BackTop from "components/content/backtop/BackTop";
 
 import { getHomeDatas, getHomeGoods } from "network/home";
 import { debounce } from "common/utils";
+import { backTopMixin } from "common/mixin";
 
 export default {
   name: "Home",
+  mixins: [backTopMixin],
   components: {
     HomeSwiper,
     RecommendView,
@@ -50,8 +51,7 @@ export default {
     TabControl,
     NavBar,
     GoodsList,
-    Scroll,
-    BackTop
+    Scroll
   },
   data() {
     return {
@@ -63,7 +63,6 @@ export default {
         sell: { page: 0, list: [] }
       },
       currentType: "pop",
-      backTopShow: false,
       TabOffsetTop: 0,
       isTabConShow: false,
       saveY: 0
@@ -102,9 +101,6 @@ export default {
       this.$refs.fixed_tab_control.currentIndex = index;
       this.$refs.tab_control.currentIndex = index;
     },
-    topClick() {
-      this.$refs.scroll.scrollTo(0, 0);
-    },
     scroll(position, y = 500) {
       this.backTopShow = Math.abs(position.y) >= y;
       this.isTabConShow = this.TabOffsetTop <= Math.abs(position.y);
@@ -133,11 +129,9 @@ export default {
   background-color: var(--color-tint);
   color: #fff;
   z-index: 999;
+  font-size: 20px;
 }
-.wrapper {
-  height: calc(100vh - 44px - 49px);
-  overflow: hidden;
-}
+
 .fixed-tab-control {
   position: fixed;
   top: 44px;

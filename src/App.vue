@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <keep-alive>
+    <keep-alive exclude="Detail">
       <router-view></router-view>
     </keep-alive>
     <main-tab-bar></main-tab-bar>
@@ -9,7 +9,6 @@
 
 <script>
 import MainTabBar from "components/content/MainTabBar";
-
 export default {
   name: "App",
   components: {
@@ -18,7 +17,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 @import "assets/css/base.css";
 #app {
   height: 100vh;

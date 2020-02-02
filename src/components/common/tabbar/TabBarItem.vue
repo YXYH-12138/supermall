@@ -2,7 +2,7 @@
   <div class="tabbar-item" @click="itemClick">
     <slot v-if="!isActive" name="item-img"></slot>
     <slot v-else name="item-active-img"></slot>
-    <div :style="fontColor">
+    <div :style="fontColor" class="item-text">
       <slot name="item-text"></slot>
     </div>
   </div>
@@ -38,7 +38,9 @@ export default {
 .tabbar-item {
   flex: 1;
   text-align: center;
+  font-size: 16px;
 }
+
 .tabbar-item img {
   width: 25px;
   height: 25px;

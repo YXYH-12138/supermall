@@ -1,6 +1,6 @@
 <template>
   <div class="goods-item" @click="detailClick">
-    <img :src="goodsItem.show.img" alt @load="imgLoad" />
+    <img :src="showImage" alt @load="imgLoad" />
     <div class="item-info">
       <p class="title">{{goodsItem.title}}</p>
       <span class="price">{{goodsItem.price}}</span>
@@ -22,10 +22,20 @@ export default {
   },
   methods: {
     imgLoad() {
-      this.$bus.$emit("itemImgLoad");
+      if (this.$route.path.includes("home")) {
+        this.$bus.$emit("itemImgLoad");
+      }
     },
     detailClick() {
-      this.$router.push("/detail/" + this.goodsItem.iid);
+      let id = this.goodsItem.iid;
+      if (id) this.$router.push("/detail/" + id);
+    }
+  },
+  computed: {
+    showImage() {
+      return this.goodsItem.show
+        ? this.goodsItem.show.img
+        : this.goodsItem.image;
     }
   }
 };
@@ -34,13 +44,15 @@ export default {
 <style>
 .goods-item {
   width: 48%;
-  font-size: 14px;
+  font-size: 16px;
   text-align: center;
   position: relative;
   padding-bottom: 44px;
+  height: 316px;
 }
 .goods-item img {
   width: 100%;
+  height: 270px;
   border-radius: 5px;
 }
 .goods-item .title {

@@ -17,7 +17,7 @@ export default {
   bottom: 60px;
 }
 .back-top img {
-  width: 43px;
+  width: 50px;
   vertical-align: middle;
 }
 </style>

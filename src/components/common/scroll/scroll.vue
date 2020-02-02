@@ -37,6 +37,9 @@ export default {
     this.scroll.on("pullingUp", () => {
       this.$emit("pullingUp");
     });
+    this.scroll.on("scrollEnd", position => {
+      this.$emit("scrollEnd");
+    });
   },
   methods: {
     scrollTo(x, y, time = 500) {
@@ -58,5 +61,9 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.wrapper {
+  height: calc(100vh - 44px - 49px);
+  overflow: hidden;
+}
 </style>

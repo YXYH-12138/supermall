@@ -1,6 +1,6 @@
 <template>
   <nav-bar>
-    <div slot="left" @click="backClick">
+    <div slot="left" @click="backClick" class="detail-navbar-left">
       <img src="~assets/img/common/back.svg" alt class="back" />
     </div>
     <div
@@ -34,18 +34,27 @@ export default {
     },
     itemClick(index) {
       this.currentIndex = index;
+      this.$emit("topClick", index);
     }
   }
 };
 </script>
 
 <style scoped>
+.detail-navbar-left {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
 .titles {
   flex: 1;
-  font-size: var(--font-size);
+  font-size: 16px;
 }
 .back {
-  vertical-align: middle;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0);
 }
 .titles.active {
   color: var(--color-tint);

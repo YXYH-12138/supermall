@@ -1,6 +1,6 @@
 <template>
   <div id="swiper-dv">
-    <div class="swiper">
+    <div class="swiper" ref="swiper">
       <slot></slot>
     </div>
     <div class="indicator">
@@ -43,6 +43,10 @@ export default {
       isScroll: true //滚动是否完成
     };
   },
+  updated() {
+    if (this.slideCount == 0)
+      this.slideCount = this.$refs.swiper.children.length;
+  },
   methods: {
     //注册相应事件
     addEvent() {
@@ -81,11 +85,11 @@ export default {
     },
     //Dom的相关处理 --记录指示器数量 克隆图片 事件注册等
     handleDom() {
-      this.addEvent();
-      let swiper = document.querySelector(".swiper");
-      let swiperItem = swiper.querySelectorAll(".swiper-item");
+      let swiper = this.$refs.swiper;
+      let swiperItem = swiper.children;
       //记录指示器数量
       this.slideCount = swiperItem.length;
+      if (this.slideCount <= 1) return;
       //记录宽度
       this.totalWidth = swiper.offsetWidth;
       //记录样式
@@ -99,9 +103,10 @@ export default {
       );
       //显示第二张图片
       this.setTransform(-this.totalWidth, 0);
+      this.addEvent();
     },
     startTimer() {
-      if (this.timer) return;
+      if (this.timer || this.slideCount <= 1) return;
       this.timer = setInterval(() => {
         this.currentIndex++;
         this.setTransform();
@@ -129,12 +134,12 @@ export default {
       this.handleDom();
       //开启定时器
       this.startTimer();
-    }, 150);
+    }, 200);
   }
 };
 </script>
 
-<style>
+<style scoped>
 #swiper-dv {
   overflow: hidden;
   position: relative;

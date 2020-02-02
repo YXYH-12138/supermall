@@ -1,6 +1,6 @@
 <template>
   <div class="recommed">
-    <div v-for="(item,index) in recommends" :key="index">
+    <div v-for="item in recommends" :key="item.id">
       <a :href="item.link">
         <img :src="item.image" />
         <div>{{item.title}}</div>
@@ -31,6 +31,7 @@ export default {
   font-size: 12px;
   padding: 10px 0 20px;
   border-bottom: 10px solid #eee;
+  height: 120px;
 }
 .recommed div {
   width: 100%;
