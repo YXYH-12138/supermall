@@ -43,10 +43,6 @@ export default {
       isScroll: true //滚动是否完成
     };
   },
-  updated() {
-    if (this.slideCount == 0)
-      this.slideCount = this.$refs.swiper.children.length;
-  },
   methods: {
     //注册相应事件
     addEvent() {
@@ -55,7 +51,7 @@ export default {
       //拖动的距离
       let distance = 0;
       let swiper = document.querySelector(".swiper");
-      //给swiper注册过渡完成事件
+      // 给swiper注册过渡完成事件;
       swiper.addEventListener("transitionend", () => {
         // this.isScroll = true;
         if (this.currentIndex > this.slideCount) {
@@ -85,25 +81,41 @@ export default {
     },
     //Dom的相关处理 --记录指示器数量 克隆图片 事件注册等
     handleDom() {
-      let swiper = this.$refs.swiper;
-      let swiperItem = swiper.children;
-      //记录指示器数量
-      this.slideCount = swiperItem.length;
-      if (this.slideCount <= 1) return;
-      //记录宽度
-      this.totalWidth = swiper.offsetWidth;
-      //记录样式
-      this.swiperStyle = swiper.style;
-      //克隆第一张图片到最后
-      swiper.appendChild(swiperItem[0].cloneNode(true));
-      //克隆最后一张图片到第一张
-      swiper.insertBefore(
-        swiperItem[this.slideCount - 1].cloneNode(true),
-        swiperItem[0]
-      );
-      //显示第二张图片
-      this.setTransform(-this.totalWidth, 0);
-      this.addEvent();
+      let domTimer = null;
+      domTimer = setInterval(() => {
+        let swiper = this.$refs.swiper;
+        let swiperItem = swiper.children;
+        //记录指示器数量
+        this.slideCount = swiperItem.length;
+        /*
+         * 1.如果数量为0代表网络较慢 Dom(主要是插槽的内容)还未完全加载完毕 重复进行相关处理
+         * 2.如果数量大于1 则代表Dom已经完全加载完毕 不需要重复执行了 要重新开启一次定时器
+         * 3.否则等于1 则也不需要重复执行了 后面的操作也不需要了 一张图片不需要克隆
+         */
+        if (this.slideCount > 1) {
+          clearInterval(domTimer);
+          this.startTimer();
+        } else if (this.slideCount == 0) {
+          return;
+        } else {
+          clearInterval(domTimer);
+          return;
+        }
+        //记录宽度
+        this.totalWidth = swiper.offsetWidth;
+        //记录样式
+        this.swiperStyle = swiper.style;
+        //克隆第一张图片到最后
+        swiper.appendChild(swiperItem[0].cloneNode(true));
+        //克隆最后一张图片到第一张
+        swiper.insertBefore(
+          swiperItem[this.slideCount - 1].cloneNode(true),
+          swiperItem[0]
+        );
+        //显示第二张图片
+        this.setTransform(-this.totalWidth, 0);
+        this.addEvent();
+      }, 500);
     },
     startTimer() {
       if (this.timer || this.slideCount <= 1) return;
