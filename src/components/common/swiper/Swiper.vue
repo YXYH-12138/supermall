@@ -39,8 +39,7 @@ export default {
       currentIndex: 1, // 当前的index
       timer: null,
       totalWidth: 0, // swiper的宽度
-      swiperStyle: {}, // swiper样式
-      isScroll: true //滚动是否完成
+      swiperStyle: {} // swiper样式s
     };
   },
   methods: {
@@ -81,41 +80,27 @@ export default {
     },
     //Dom的相关处理 --记录指示器数量 克隆图片 事件注册等
     handleDom() {
-      let domTimer = null;
-      domTimer = setInterval(() => {
-        let swiper = this.$refs.swiper;
-        let swiperItem = swiper.children;
-        //记录指示器数量
-        this.slideCount = swiperItem.length;
-        /*
-         * 1.如果数量为0代表网络较慢 Dom(主要是插槽的内容)还未完全加载完毕 重复进行相关处理
-         * 2.如果数量大于1 则代表Dom已经完全加载完毕 不需要重复执行了 要重新开启一次定时器
-         * 3.否则等于1 则也不需要重复执行了 后面的操作也不需要了 一张图片不需要克隆
-         */
-        if (this.slideCount > 1) {
-          clearInterval(domTimer);
-          this.startTimer();
-        } else if (this.slideCount == 0) {
-          return;
-        } else {
-          clearInterval(domTimer);
-          return;
-        }
-        //记录宽度
-        this.totalWidth = swiper.offsetWidth;
-        //记录样式
-        this.swiperStyle = swiper.style;
-        //克隆第一张图片到最后
-        swiper.appendChild(swiperItem[0].cloneNode(true));
-        //克隆最后一张图片到第一张
-        swiper.insertBefore(
-          swiperItem[this.slideCount - 1].cloneNode(true),
-          swiperItem[0]
-        );
-        //显示第二张图片
-        this.setTransform(-this.totalWidth, 0);
-        this.addEvent();
-      }, 500);
+      let swiper = this.$refs.swiper;
+      if (!swiper || swiper.childElementCount <= 1) {
+        return;
+      }
+      let swiperItem = swiper.children;
+      //记录指示器数量
+      this.slideCount = swiperItem.length;
+      //记录宽度
+      this.totalWidth = swiper.offsetWidth;
+      //记录样式
+      this.swiperStyle = swiper.style;
+      //克隆第一张图片到最后
+      swiper.appendChild(swiperItem[0].cloneNode(true));
+      //克隆最后一张图片到第一张
+      swiper.insertBefore(
+        swiperItem[this.slideCount - 1].cloneNode(true),
+        swiperItem[0]
+      );
+      //显示第二张图片
+      this.setTransform(-this.totalWidth, 0);
+      this.addEvent();
     },
     startTimer() {
       if (this.timer || this.slideCount <= 1) return;
@@ -138,15 +123,20 @@ export default {
         "-webkit-transform"
       ] = `translate3d(${distance}px, 0, 0)`;
       this.swiperStyle["-ms-transform"] = `translate3d(${distance}px, 0, 0)`;
-      // this.isScroll = false;
     }
   },
   mounted() {
-    setTimeout(() => {
+    this.$nextTick(() => {
       this.handleDom();
       //开启定时器
       this.startTimer();
-    }, 200);
+    });
+  },
+  activated() {
+    this.startTimer();
+  },
+  deactivated() {
+    this.clearTimer();
   }
 };
 </script>

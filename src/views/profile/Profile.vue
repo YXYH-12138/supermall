@@ -3,9 +3,7 @@
     <nav-bar class="profile-nav">
       <div slot="center">我的信息</div>
     </nav-bar>
-    <div>
-      <user-info></user-info>
-    </div>
+    <user-info></user-info>
     <div class="account">
       <div class="account-item">
         <div class="number">
@@ -43,17 +41,17 @@ export default {
   data() {
     return {
       orderList: [
-        { icon: "#order", iconColor: "#ff8198", info: "我的消息" },
-        { icon: "#point", iconColor: "#fc7b53", info: "积分商城" },
-        { icon: "#vip", iconColor: "#ffc636", info: "会员卡" }
+        { icon: "#icon-wodexiaoxi", iconColor: "#ff8198", info: "我的消息" },
+        { icon: "#icon-jifen", iconColor: "#fc7b53", info: "积分商城" },
+        { icon: "#icon-huiyuanqia", iconColor: "#ffc636", info: "会员卡" }
       ],
       serviceList: [
-        { icon: "#service", iconColor: "#ff8198", info: "我的购物车" },
-        { icon: "#download", iconColor: "#ff8198", info: "下载购物APP" }
+        { icon: "#icon-gouwuche", iconColor: "#ff8198", info: "我的购物车" },
+        { icon: "#icon-xiazai", iconColor: "#ff8198", info: "下载购物APP" }
       ],
       moreList: [
-        { icon: "#expired", iconColor: "#ff8198", info: "设置" },
-        { icon: "#vip", iconColor: "#ff8198", info: "更多" }
+        { icon: "#icon-shezhi", iconColor: "#ff8198", info: "设置" },
+        { icon: "#icon-gengduo", iconColor: "#ff8198", info: "更多" }
       ]
     };
   },
@@ -78,12 +76,6 @@ export default {
 .profile-nav {
   background-color: var(--color-tint);
   color: #fff;
-  /* 
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  z-index: 9; */
 }
 .account {
   display: flex;

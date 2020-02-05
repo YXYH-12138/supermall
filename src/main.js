@@ -5,6 +5,8 @@ import store from './store'
 import VueLazyload from "vue-lazyload"
 import toast from "components/common/toast"
 
+import "assets/iconfont/iconfont.js"
+
 import fastclick from "fastclick"
 
 //解决移动端300ms延迟

@@ -35,7 +35,9 @@ export default {
 <style>
 .bottom-bar {
   height: 49px;
-  position: relative;
+  position: fixed;
+  left: 0;
+  right: 0;
   background-color: #eee;
 
   display: flex;

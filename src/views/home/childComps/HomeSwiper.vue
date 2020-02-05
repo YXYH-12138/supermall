@@ -1,5 +1,5 @@
 <template>
-  <swiper ref="homeSwiper">
+  <swiper ref="homeSwiper" :key="banners.length">
     <swiper-item v-for="(item) in banners" :key="item.id">
       <a :href="item.link">
         <img :src="item.image" />
@@ -24,12 +24,6 @@ export default {
   components: {
     Swiper,
     SwiperItem
-  },
-  activated() {
-    this.$refs.homeSwiper.startTimer();
-  },
-  deactivated() {
-    this.$refs.homeSwiper.clearTimer();
   }
 };
 </script>
