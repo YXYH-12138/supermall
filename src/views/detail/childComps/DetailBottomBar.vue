@@ -38,6 +38,7 @@ export default {
   position: fixed;
   left: 0;
   right: 0;
+  bottom: 0;
   background-color: #eee;
 
   display: flex;

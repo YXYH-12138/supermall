@@ -59,6 +59,7 @@ export default {
   right: 0;
   background-color: rgba(236, 236, 236);
   display: flex;
+  bottom: 49px;
   font-size: 16px;
 }
 .check-all {

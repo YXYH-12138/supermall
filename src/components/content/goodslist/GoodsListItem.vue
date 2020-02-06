@@ -33,9 +33,15 @@ export default {
   },
   computed: {
     showImage() {
-      return this.goodsItem.show
-        ? this.goodsItem.show.img
-        : this.goodsItem.image;
+      let img = "";
+      if (this.goodsItem.show) {
+        img = this.goodsItem.show.img;
+      } else if (this.goodsItem.image) {
+        img = this.goodsItem.image;
+      } else {
+        img = this.goodsItem.img;
+      }
+      return img;
     }
   }
 };
